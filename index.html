@@ -2,15 +2,66 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"/>
+    <style>
+        body {
+            -webkit-app-region: drag;
+            -webkit-user-select: none;
+            margin: 0;
+        }
+
+        .floating-red {
+            background: #FA5151;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+
+        .floating-green {
+            background: #07C160;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
-<h1>Hello World!</h1>
-<p>
-    We are using Node.js <span id="node-version"></span>,
-    Chromium <span id="chrome-version"></span>,
-    and Electron <span id="electron-version"></span>.
-</p>
+<div class="floating-red" id="floating"></div>
+<script>
+    loadData();
+
+    setInterval(function () {
+        loadData()
+    }, 3000);
+
+    function loadData() {
+        document.getElementById("floating").innerHTML = "-";
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var array = xhttp.responseText.split("~");
+                var percent = array[32];
+                if (percent >= 0) {
+                    document.getElementById("floating").innerHTML = array[3] + " +" + percent + "%";
+                    document.getElementById("floating").className = "floating-red"
+                } else {
+                    document.getElementById("floating").innerHTML = array[3] + " " + percent + "%";
+                    document.getElementById("floating").className = "floating-green"
+                }
+            }
+        };
+        xhttp.open("GET", "https://web.sqt.gtimg.cn/q=sz002008", true);
+        xhttp.send();
+    }
+</script>
 </body>
 </html>
